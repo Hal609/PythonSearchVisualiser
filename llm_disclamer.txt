@@ -1,0 +1,9 @@
+Some elements of this project were created with the use of LLM AI.
+Specifically, ChatGPT was used to search for useful Python modules
+for the project. Additionally, some of the Pandas3D code in vis.py
+was created by ChatGPT. For transparency, all pertinent discussion
+regarding the project can be viewed at the address which is linked
+at: https://chatgpt.com/share/6721f05e-e72c-8005-a857-49fe48f9f5cc
+For any quires regarding the use of AI tools in the project please
+contact hal@kolb.co.uk. Alternatively, add a new github discussion
+here: https://github.com/Hal609/PythonSearchVisualiser/discussions

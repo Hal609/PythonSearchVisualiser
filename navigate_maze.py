@@ -5,6 +5,8 @@ visited = set()
 frontier = []
 
 def get_valid_adjacent(grid, position):
+    visited.add(position)
+
     grid_width, grid_height = grid.shape
     adjacent = []
     directions = np.array([(0, 1), (0, -1), (1, 0), (-1, 0)])
@@ -23,9 +25,6 @@ def get_valid_adjacent(grid, position):
 
 
 def get_next_pos(grid, position):
-    grid[position[0]][position[1]] = 3
-    visited.add(position)
-    pos_next = get_valid_adjacent(grid, position)
-    grid[position[0]][position[1]] = 22
+    get_valid_adjacent(grid, position)
     next = frontier.pop()
     return next
