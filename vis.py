@@ -14,9 +14,13 @@ class VoxelGrid(ShowBase):
         super().__init__()
 
         self.done = False
+        self.cam_done = False
         self.tick = 0.1
         self.ticked = False
         self.grid2d = numpy_grid
+
+        self.cam_pos = Point3(0, 0, 0)
+        self.agent_position = Point3(1.5, 0.5, 0)
 
         self.render.setShaderAuto()  # Enable shaders
         
@@ -26,7 +30,6 @@ class VoxelGrid(ShowBase):
         # Set up lighting
         self.setup_lighting()
 
-        self.agent_position = Point3(1.5, 0.5, 0)
         # Create the voxel grid
         self.create_voxel_grid(*self.grid2d.shape, 1)
         self.create_floor()
@@ -84,16 +87,15 @@ class VoxelGrid(ShowBase):
     def is_done(self, next_pos):
         height, width = self.grid2d.shape
         if next_pos == (height - 2, width - 2):
-            print("!!!!!! DONE !!!!!!!")
             x, y, z = self.agent_position
-            self.agent.setPos(x, y + 1, z)
+            self.agent_step((self.position_to_index(Point3(x, y+1, z))))
             return True
         return False
 
     def add_visited_marker(self, position):
         self.marker = self.loader.loadModel("models/box")
 
-        self.marker.setSz(0.01)
+        self.marker.setSz(0.001)
         self.marker.setPos(position)
         self.marker.setColor(0.99, 0.5, 0.5, 1)
 
@@ -165,8 +167,25 @@ class VoxelGrid(ShowBase):
         angleDegrees = task.time * 0.5
         angleRadians = angleDegrees * (3.14159 / 180.0)
         centre = (self.grid2d.shape[0]/2, self.grid2d.shape[1]/2)
-        distance = 50
-        self.camera.setPos(LVector3(centre[0] + math.sin(angleRadians)*distance, -centre[1] + math.cos(angleRadians)*distance, 25))
+        
+        if (self.done and self.ticked and self.tick*100 % 100 == 0) or self.cam_done:
+            move_speed = 0.5
+
+            distance = 10
+            cam_target = LVector3(centre[0] + math.sin(angleRadians)*distance, -centre[1] + math.cos(angleRadians)*distance, 45)
+            dif = cam_target - self.cam_pos
+            dif_x, dif_y, dif_z = dif
+            dif_length = (dif_x**2 + dif_y**2 +dif_z**2)**(0.5)
+            if dif_length > 2:
+                self.cam_pos += dif.normalized()*move_speed
+            else:
+                self.cam_pos = cam_target
+            self.cam_done = True
+        else:
+            distance = 50
+            self.cam_pos = LVector3(centre[0] + math.sin(angleRadians)*distance, -centre[1] + math.cos(angleRadians)*distance, 25)
+
+        self.camera.setPos(self.cam_pos)
         self.camera.lookAt(*centre, 0)
         return Task.cont
 
