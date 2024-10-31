@@ -5,7 +5,8 @@ grid = Grid(Size(20, 20))
 
 from maze_generator import create_maze
 
-maze = create_maze(21, 21)
+maze = create_maze(25, 25)
+
 for x, row in enumerate(maze):
     for y, cell in enumerate(row):
         if cell != 1:

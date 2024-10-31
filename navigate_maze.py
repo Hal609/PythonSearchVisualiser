@@ -17,14 +17,18 @@ def get_valid_adjacent(grid, position):
                 if entry not in frontier and entry not in visited:
                     frontier.append(entry)
                 adjacent.append(entry)
-    
-    not_visited = [entry for entry in adjacent if entry not in visited]
-    if len(not_visited) > 0:
-        return tuple(not_visited)
+
     return tuple(adjacent)
 
-
+full_path = []
+current_branch = []
 def get_next_pos(grid, position):
-    get_valid_adjacent(grid, position)
+    global full_path
+    adjacent = get_valid_adjacent(grid, position)
     next = frontier.pop()
+    full_path.append(next)
+    # if next in adjacent:
+    # else:
+    #     best_path = best_path[:-5]
+    # print(full_path)
     return next

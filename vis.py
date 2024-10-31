@@ -13,6 +13,7 @@ class VoxelGrid(ShowBase):
     def __init__(self, numpy_grid):
         super().__init__()
 
+        self.num_visited = 0
         self.done = False
         self.cam_done = False
         self.tick = 0.1
@@ -80,7 +81,7 @@ class VoxelGrid(ShowBase):
         return Point3(index[0] - 0.5, index[1] - 0.5, 0)
     
     def agent_step(self, next_pos):
-        self.add_visited_marker(self.agent_position)
+        self.add_visited_marker(self.agent_position, next_pos)
         self.agent_position = self.index_to_position(next_pos)
         self.agent.setPos(self.agent_position)
 
@@ -88,16 +89,27 @@ class VoxelGrid(ShowBase):
         height, width = self.grid2d.shape
         if next_pos == (height - 2, width - 2):
             x, y, z = self.agent_position
-            self.agent_step((self.position_to_index(Point3(x, y+1, z))))
+            new_x, new_y, _ = self.position_to_index(Point3(x, y+1, z))
+            self.agent_step((new_x, new_y))
             return True
         return False
 
-    def add_visited_marker(self, position):
+    def add_visited_marker(self, position, next_pos):
+        self.num_visited += 1
         self.marker = self.loader.loadModel("models/box")
-
+        # next_pos = LVector3(*next_pos, 1)
+        # dif_direction = (LVector3(position) - next_pos)
+        # if (dif_direction.x**2 + dif_direction.y**2)**0.5 <= 2:
+        # #     self.marker.setScale(dif_direction)
+        #     if abs(position.x - next_pos.x) > 0.5:
+        #         self.marker.setSy(0.5)
+        #     if abs(position.y - next_pos.y) > 0.5:
+        #         self.marker.setSx(0.5)
         self.marker.setSz(0.001)
         self.marker.setPos(position)
-        self.marker.setColor(0.99, 0.5, 0.5, 1)
+        self.marker.setZ(-0.4)
+        colour_scale_factor = 1/(1+math.e**(-self.num_visited*0.01))
+        self.marker.setColor(colour_scale_factor, 0.5/colour_scale_factor, 0.5*colour_scale_factor+0.5, 1)
 
         self.marker.setAttrib(CullFaceAttrib.make(CullFaceAttrib.MCullNone))
         
@@ -171,19 +183,19 @@ class VoxelGrid(ShowBase):
         if (self.done and self.ticked and self.tick*100 % 100 == 0) or self.cam_done:
             move_speed = 0.5
 
-            distance = 10
+            distance = (self.grid2d.shape[0] + self.grid2d.shape[1])/2
             cam_target = LVector3(centre[0] + math.sin(angleRadians)*distance, -centre[1] + math.cos(angleRadians)*distance, 45)
             dif = cam_target - self.cam_pos
             dif_x, dif_y, dif_z = dif
             dif_length = (dif_x**2 + dif_y**2 +dif_z**2)**(0.5)
-            if dif_length > 2:
+            if dif_length > 1.1:
                 self.cam_pos += dif.normalized()*move_speed
             else:
                 self.cam_pos = cam_target
             self.cam_done = True
         else:
-            distance = 50
-            self.cam_pos = LVector3(centre[0] + math.sin(angleRadians)*distance, -centre[1] + math.cos(angleRadians)*distance, 25)
+            distance = 10 + (self.grid2d.shape[0] + self.grid2d.shape[1])
+            self.cam_pos = LVector3(centre[0] + math.sin(angleRadians)*distance, -centre[1] + math.cos(angleRadians)*distance, (self.grid2d.shape[0] + self.grid2d.shape[1])/2)
 
         self.camera.setPos(self.cam_pos)
         self.camera.lookAt(*centre, 0)
