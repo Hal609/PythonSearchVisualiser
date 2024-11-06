@@ -1,34 +1,30 @@
 import numpy as np
-import random as rn
+from tree_class import Tree, TreeNode
 
-visited = set()
-frontier = []
+tree = Tree()
 
-def get_valid_adjacent(grid, position):
-    visited.add(position)
+open_list = []
+open_positions = []
+next_node = tree.root
 
-    grid_width, grid_height = grid.shape
-    adjacent = []
-    directions = np.array([(0, 1), (0, -1), (1, 0), (-1, 0)])
-    for entry in directions + np.array(position):
-        entry = tuple(entry)
-        if not (0 in entry or -1 in entry or grid_width-1 <= entry[0] or grid_height-1 <= entry[1]):
-            if grid[entry[0]][entry[1]] == 22:
-                if entry not in frontier and entry not in visited:
-                    frontier.append(entry)
-                adjacent.append(entry)
-
-    return tuple(adjacent)
-
-full_path = []
-current_branch = []
 def get_next_pos(grid, position):
-    global full_path
-    adjacent = get_valid_adjacent(grid, position)
-    next = frontier.pop()
-    full_path.append(next)
-    # if next in adjacent:
-    # else:
-    #     best_path = best_path[:-5]
-    # print(full_path)
-    return next
+    global next_node, first_run
+    add_adjacent_nodes(grid, position, next_node)
+    next_node = open_list.pop()
+    print(tree)
+    
+    return next_node.pos
+
+def add_adjacent_nodes(grid, position, current_node):
+    global open_list
+
+    children_nodes = [TreeNode(current_node, pos = tuple(entry)) for entry in ( np.array([(0, 1), (0, -1), (1, 0), (-1, 0)]) + np.array(position)) 
+                     if ((not (0 in tuple(entry) or -1 in tuple(entry) or grid.shape[0]-1 <= tuple(entry)[0] or grid.shape[1]-1 <= tuple(entry)[1])) 
+                         and grid[tuple(entry)[0]][tuple(entry)[1]] == 0
+                         and tuple(entry) not in open_positions 
+                         )]
+    
+    current_node.children = [child for child in children_nodes if child.pos not in open_positions]
+    open_positions.extend([child.pos for child in children_nodes])
+
+    open_list.extend(children_nodes)

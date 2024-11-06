@@ -4,8 +4,6 @@ with reference to the work of Angel Uriot -  https://github.com/angeluriot/Maze_
 '''
 
 import random as rd
-
-import matplotlib.pyplot as plt
 import numpy as np
 
 

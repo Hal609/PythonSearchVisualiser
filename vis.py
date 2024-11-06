@@ -65,7 +65,7 @@ class VoxelGrid(ShowBase):
         return Task.cont
     
     def move_agent(self, task):
-        if self.done: return Task.cont
+        # if self.done: return Task.cont
 
         if self.ticked and 10*self.tick % 2 == 0:
             x, y, _ = self.position_to_index(self.agent_position)
@@ -184,7 +184,7 @@ class VoxelGrid(ShowBase):
             move_speed = 0.5
 
             distance = (self.grid2d.shape[0] + self.grid2d.shape[1])/2
-            cam_target = LVector3(centre[0] + math.sin(angleRadians)*distance, -centre[1] + math.cos(angleRadians)*distance, 45)
+            cam_target = LVector3(centre[0] + math.cos(angleRadians)*distance, -centre[1] + math.sin(angleRadians)*distance, 45)
             dif = cam_target - self.cam_pos
             dif_x, dif_y, dif_z = dif
             dif_length = (dif_x**2 + dif_y**2 +dif_z**2)**(0.5)
