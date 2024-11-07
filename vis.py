@@ -1,8 +1,8 @@
 from panda3d.core import Point3
 from direct.showbase.ShowBase import ShowBase
 from direct.task import Task
-from panda3d.core import LVecBase4, LVector3, LVector4
-from panda3d.core import AmbientLight, DirectionalLight, Spotlight
+from panda3d.core import LVector3, LVector4
+from panda3d.core import DirectionalLight
 from panda3d.core import CullFaceAttrib, AntialiasAttrib
 from navigate_maze import get_next_pos
 import numpy as np
@@ -97,14 +97,7 @@ class VoxelGrid(ShowBase):
     def add_visited_marker(self, position, next_pos):
         self.num_visited += 1
         self.marker = self.loader.loadModel("models/box")
-        # next_pos = LVector3(*next_pos, 1)
-        # dif_direction = (LVector3(position) - next_pos)
-        # if (dif_direction.x**2 + dif_direction.y**2)**0.5 <= 2:
-        # #     self.marker.setScale(dif_direction)
-        #     if abs(position.x - next_pos.x) > 0.5:
-        #         self.marker.setSy(0.5)
-        #     if abs(position.y - next_pos.y) > 0.5:
-        #         self.marker.setSx(0.5)
+
         self.marker.setSz(0.001)
         self.marker.setPos(position)
         self.marker.setZ(-0.4)

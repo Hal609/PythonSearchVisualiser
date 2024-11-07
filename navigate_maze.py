@@ -11,7 +11,6 @@ def get_next_pos(grid, position):
     global next_node, first_run
     add_adjacent_nodes(grid, position, next_node)
     next_node = open_list.pop()
-    print(tree)
     
     return next_node.pos
 
