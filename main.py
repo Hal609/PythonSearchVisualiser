@@ -1,3 +1,7 @@
+'''
+Repo available at https://github.com/Hal609/PythonSearchVisualiser
+'''
+
 from vis import run_grid_vis
 from navigate_maze import run_maze
 from maze_generator import create_maze
