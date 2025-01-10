@@ -21,6 +21,13 @@ def get_next_pos_bfs(grid, position):
     # if reached_goal(grid, next_node.pos): print(path_to_node(next_node))
     return next_node.pos
 
+def get_next_pos(grid, position):
+    global next_node
+    add_adjacent_nodes(grid, position, next_node)
+    next_node = open_list.pop(0)
+    if reached_goal(grid, next_node.pos): print(path_to_node(next_node))
+    return next_node.pos
+
 def path_to_node(node):
     path = []
     while node is not None:
