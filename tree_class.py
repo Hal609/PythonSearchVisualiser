@@ -30,7 +30,7 @@ class TreeNode():
 
 class Tree():
     def __init__(self):
-        self.root = TreeNode(None, (0, 0), [])
+        self.root = TreeNode(None, (2, 1), [])
 
     def __str__(self):
         return self.root.__str__()
